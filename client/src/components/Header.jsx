@@ -118,17 +118,16 @@ export default function Header() {
         <Navbar.Link active={path === '/about'} as={'div'}>
           <Link to='/about'>About</Link>
         </Navbar.Link>
-        {currentUser.isAdmin && (
+        {currentUser && currentUser.isAdmin && (
           <Button
               type='button'
               gradientDuoTone='purpleToPink'
               className='w-full'
             >
               <Link to={'/create-post'}>
-              Create a post
-            </Link>
+                Create a post
+              </Link>
             </Button>
-            
         )}
       </ul>
       </Navbar.Collapse>
