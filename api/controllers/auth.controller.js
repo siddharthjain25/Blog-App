@@ -17,6 +17,28 @@ export const signup = async (req, res, next) => {
     next(errorHandler(400, 'All fields are required'));
   }
 
+  if (req.body.username) {
+    // Check username availability before update
+    const isUsernameAvailable = await User.findOne({ username: req.body.username });
+    if (isUsernameAvailable && isUsernameAvailable._id.toString() !== req.params.userId) {
+      return next(errorHandler(400, 'Username is already taken'));
+    }
+  }
+
+  if (req.body.email) {
+    // Check username availability before update
+    const isEmailAvailable = await User.findOne({ email: req.body.email });
+    if (isEmailAvailable && isEmailAvailable._id.toString() !== req.params.userId) {
+      return next(errorHandler(400, 'Email already exist'));
+    }
+  }
+
+  if (req.body.password) {
+    if (req.body.password.length < 6) {
+      return next(errorHandler(400, 'Password must be at least 6 characters'));
+    }
+  }
+
   const hashedPassword = bcryptjs.hashSync(password, 10);
 
   const newUser = new User({
