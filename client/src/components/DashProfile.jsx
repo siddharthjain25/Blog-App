@@ -266,16 +266,16 @@ export default function DashProfile() {
           {updateUserSuccess}
         </Alert>
       )}
-      {/* {updateUserError && (
+      {updateUserError && (
         <Alert color='failure' className='mt-5'>
           {updateUserError}
         </Alert>
-      )} */}
-      {error && (
+      )}
+      {/* {error && (
         <Alert color='failure' className='mt-5'>
           {error}
         </Alert>
-      )}
+      )} */}
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
