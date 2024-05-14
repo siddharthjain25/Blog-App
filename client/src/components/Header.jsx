@@ -111,12 +111,26 @@ export default function Header() {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
+      <ul className='mt-4 flex flex-col items-center md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium'>
         <Navbar.Link active={path === '/'} as={'div'}>
           <Link to='/'>Home</Link>
         </Navbar.Link>
         <Navbar.Link active={path === '/about'} as={'div'}>
           <Link to='/about'>About</Link>
         </Navbar.Link>
+        {currentUser.isAdmin && (
+          <Button
+              type='button'
+              gradientDuoTone='purpleToPink'
+              className='w-full'
+            >
+              <Link to={'/create-post'}>
+              Create a post
+            </Link>
+            </Button>
+            
+        )}
+      </ul>
       </Navbar.Collapse>
     </Navbar>
   );

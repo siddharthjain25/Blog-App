@@ -1,8 +1,10 @@
-import { Button, Spinner } from 'flowbite-react';
+import { Button, Spinner, Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import CommentSection from '../components/CommentSection';
 import PostCard from '../components/PostCard';
+import { useSelector } from 'react-redux';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -10,6 +12,12 @@ export default function PostPage() {
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
   const [recentPosts, setRecentPosts] = useState(null);
+  const { currentUser } = useSelector((state) => state.user);
+  const [userPosts, setUserPosts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -50,6 +58,29 @@ export default function PostPage() {
     }
   }, []);
 
+  const handleDeletePost = async () => {
+    setShowModal(false);
+    try {
+      const res = await fetch(
+        `/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        setUserPosts((prev) =>
+          prev.filter((post) => post._id !== postIdToDelete)
+        );
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   if (loading)
     return (
       <div className='flex justify-center items-center min-h-screen'>
@@ -76,6 +107,21 @@ export default function PostPage() {
       />
       <div className='flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs'>
         <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
+        {currentUser.isAdmin && (
+          <>
+            <Link className='text-teal-500 hover:underline' to={`/update-post/${post._id}`}>
+              <span>Edit</span>
+            </Link>
+            <span
+              onClick={() => {
+              setShowModal(true);
+              setPostIdToDelete(post._id);
+              }}
+              className='font-medium text-red-500 hover:underline cursor-pointer'>
+              Delete
+            </span>
+          </>
+        )}
         <span className='italic'>
           {post && (post.content.length / 1000).toFixed(0)} mins read
         </span>
@@ -94,6 +140,30 @@ export default function PostPage() {
             recentPosts.map((post) => <PostCard key={post._id} post={post} />)}
         </div>
       </div>
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete this post?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDeletePost}>
+                Yes, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </main>
   );
 }
