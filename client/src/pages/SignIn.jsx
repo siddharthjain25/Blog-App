@@ -84,6 +84,9 @@ export default function SignIn() {
                 onChange={handleChange}
               />
             </div>
+            <Link to='/password-reset' className='text-blue-500'>
+              Forgot Password?
+            </Link>
             <Button
               gradientDuoTone='purpleToPink'
               type='submit'
