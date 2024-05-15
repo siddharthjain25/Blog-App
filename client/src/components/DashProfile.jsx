@@ -259,7 +259,7 @@ const copyRecoveryCode = async () => {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM8 12h-2v4h2zM16 16h-2a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM16 12h-2v4h2z" />
           </svg>
-          Copy Code
+          Recovery Code
         </Button>
         {copied && (
           <div className="text-green-500 mt-2">Recovery code copied!</div>
