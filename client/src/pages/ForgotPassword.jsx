@@ -55,9 +55,7 @@ export default function ForgotPassword() {
 
   const handleVerification = async (e) => {
     e.preventDefault();
-    // if (!formData.email || !formData.password) {
-    //   return dispatch(signInFailure('Please fill all the fields'));
-    // }
+    
     try {
       setLoading(true);
       const res = await fetch('/api/verify', {
@@ -82,9 +80,7 @@ export default function ForgotPassword() {
   }
   const handleReset = async (e) => {
     e.preventDefault();
-    // if (!formData.email || !formData.password) {
-    //   return dispatch(signInFailure('Please fill all the fields'));
-    // }
+    
     try {
       setLoading(true);
       const newData = {
