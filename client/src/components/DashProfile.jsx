@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, ModalBody, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, TextInput } from 'flowbite-react';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -22,6 +22,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector((state) => state.user);
@@ -164,6 +165,19 @@ export default function DashProfile() {
       console.log(error.message);
     }
   };
+
+  const [copied, setCopied] = useState(false);
+
+const copyRecoveryCode = async () => {
+  try {
+    await navigator.clipboard.writeText(currentUser.recoveryCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  } catch (error) {
+    console.error('Error copying recovery code:', error);
+  }
+};
+
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
@@ -241,6 +255,15 @@ export default function DashProfile() {
         >
           {loading ? 'Loading...' : 'Update'}
         </Button>
+        <Button onClick={copyRecoveryCode} color='gray' outline>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM8 12h-2v4h2zM16 16h-2a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM16 12h-2v4h2z" />
+          </svg>
+          Copy Code
+        </Button>
+        {copied && (
+          <div className="text-green-500 mt-2">Recovery code copied!</div>
+        )}
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
             <Button

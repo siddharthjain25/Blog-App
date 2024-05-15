@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    recoveryCode: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );

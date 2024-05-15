@@ -15,7 +15,6 @@ import { errorHandler } from './utils/error.js';
 
 const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
 
-
 dotenv.config();
 
 mongoose
@@ -49,33 +48,17 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
-app.post("/api/email", async (req, res, next) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.MY_EMAIL,
-        pass: process.env.MY_PASSWORD,
-    },
-});
-
-const mailConfigurations = {
-    from: "Thousand Winters",
-    to: req.body.email,
-    subject: 'Email Verification',
-    text: `Hi! There, your verification code is ${otp}`,
-};
-
-const info = await transporter.sendMail(mailConfigurations);
-
-next(errorHandler(200, 'Email Sent Successfully'));
-console.log('Email Sent Successfully');
-//console.log(info);
-});
-
 app.post("/api/verify", async (req, res, next) => {
-  if(req.body.otp == otp){
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    //res.status(400).json({ error: "Invalid email address." });
+    next(errorHandler(400, 'Invalid email address'));
+  }
+
+  if(req.body.recoveryCode == user.recoveryCode){
     //res.json({error: 'Verification Succeed'});
-    next(errorHandler(200, 'Verification Succeed'));
+    next(errorHandler(200, 'Verification Successful'));
   }
   else{
     //res.json({error: 'Verification Failed'});

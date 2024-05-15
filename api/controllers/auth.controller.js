@@ -2,6 +2,7 @@ import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
+import otpGenerator from 'otp-generator';
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -45,6 +46,7 @@ export const signup = async (req, res, next) => {
     username,
     email,
     password: hashedPassword,
+    recoveryCode: otpGenerator.generate(10, { upperCaseAlphabets: true, lowerCaseAlphabets: false, specialChars: false }),
   });
 
   try {
@@ -117,6 +119,7 @@ export const google = async (req, res, next) => {
         email,
         password: hashedPassword,
         profilePicture: googlePhotoUrl,
+        recoveryCode: otpGenerator.generate(10, { upperCaseAlphabets: true, lowerCaseAlphabets: false, specialChars: false }),
       });
       await newUser.save();
       const token = jwt.sign(
