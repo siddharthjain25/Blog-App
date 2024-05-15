@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useEffect, useState } from 'react';
+import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 
 export default function Header() {
   const path = useLocation().pathname;
@@ -118,7 +119,7 @@ export default function Header() {
         <Navbar.Link active={path === '/about'} as={'div'}>
           <Link to='/about'>About</Link>
         </Navbar.Link>
-        {currentUser && currentUser.isAdmin && (
+        {currentUser && currentUser.isAdmin ? 
           <Button
               type='button'
               gradientDuoTone='purpleToPink'
@@ -128,7 +129,7 @@ export default function Header() {
                 Create a post
               </Link>
             </Button>
-        )}
+         : <BuyMeACoffeeButton />}
       </ul>
       </Navbar.Collapse>
     </Navbar>
