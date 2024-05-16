@@ -6,6 +6,7 @@ import OAuth from '../components/OAuth';
 export default function SignUp() {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -30,7 +31,10 @@ export default function SignUp() {
       }
       setLoading(false);
       if(res.ok) {
-        navigate('/sign-in');
+        setSuccessMessage(data.message);
+        setTimeout(() => {
+          navigate('/sign-in');
+        }, 2500);
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -105,6 +109,11 @@ export default function SignUp() {
               Sign In
             </Link>
           </div>
+          {successMessage && (
+            <Alert className='mt-5' color='success'>
+              {successMessage}
+            </Alert>
+          )}
           {errorMessage && (
             <Alert className='mt-5' color='failure'>
               {errorMessage}

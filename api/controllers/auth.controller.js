@@ -51,7 +51,12 @@ export const signup = async (req, res, next) => {
 
   try {
     await newUser.save();
-    res.json('Signup successful');
+    //next(errorHandler(200, 'Signup successful, Please sign-in'));
+    res.json({
+      message: 'Signup successful, Redirecting to sign-in page.',
+      success: true,
+      statusCode: 200,
+    });
   } catch (error) {
     next(error);
   }

@@ -58,7 +58,12 @@ app.post("/api/verify", async (req, res, next) => {
 
   if(req.body.recoveryCode == user.recoveryCode){
     //res.json({error: 'Verification Succeed'});
-    next(errorHandler(200, 'Verification Successful'));
+    //next(errorHandler(200, ''));
+    res.json({
+      message: 'Verification Successful',
+      success: true,
+      statusCode: 200,
+    });
   }
   else{
     //res.json({error: 'Verification Failed'});

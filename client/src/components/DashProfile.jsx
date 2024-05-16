@@ -255,15 +255,7 @@ const copyRecoveryCode = async () => {
         >
           {loading ? 'Loading...' : 'Update'}
         </Button>
-        <Button onClick={copyRecoveryCode} color='gray' outline>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM8 12h-2v4h2zM16 16h-2a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM16 12h-2v4h2z" />
-          </svg>
-          Recovery Code
-        </Button>
-        {copied && (
-          <div className="text-green-500 mt-2">Recovery code copied!</div>
-        )}
+        
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
             <Button
@@ -276,7 +268,20 @@ const copyRecoveryCode = async () => {
           </Link>
         )}
       </form>
-      <div className='text-red-500 flex justify-between mt-5'>
+      <div className="text-white-500 mt-14 font-extrabold text-xl">Recovery code</div>
+        <div className="text-red-500 mt-2">You can use this code to access your account if you lose access to your sign-in info. Store it in a safe place.</div>
+        <div className='flex flex-col gap-4'>
+          <Button className='mt-2' onClick={copyRecoveryCode} color='gray' outline>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM8 12h-2v4h2zM16 16h-2a2 2 0 01-2-2V6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2zM16 12h-2v4h2z" />
+            </svg>
+            Copy Recovery Code
+          </Button>
+        </div>
+        {copied && (
+          <div className="text-green-500 mt-2">Recovery code copied!</div>
+        )}
+        <div className='text-red-500 flex justify-between mt-5'>
         <span onClick={() => setShowModal(true)} className='cursor-pointer'>
           Delete Account
         </span>
@@ -284,6 +289,7 @@ const copyRecoveryCode = async () => {
           Sign Out
         </span>
       </div>
+      
       {updateUserSuccess && (
         <Alert color='success' className='mt-5'>
           {updateUserSuccess}

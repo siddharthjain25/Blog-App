@@ -10,6 +10,7 @@ export default function ForgotPassword() {
   const [formData1, setFormData1] = useState({});
   const [formData2, setFormData2] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [isVerification, setIsVerfication] = useState(null);
@@ -34,6 +35,7 @@ export default function ForgotPassword() {
         body: JSON.stringify(formData1),
       });
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
         setErrorMessage(data.message);
         setLoading(false);
@@ -41,6 +43,7 @@ export default function ForgotPassword() {
 
       if (res.ok) {
         setLoading(false);
+        setSuccessMessage(data.message);
         dispatch(passwordReset(data));
         setIsVerfication(true);
       }
@@ -167,8 +170,13 @@ export default function ForgotPassword() {
             </Button>
           </form>
           </>}
+          {successMessage && (
+            <Alert className='mt-5' color='success'>
+              {successMessage}
+            </Alert>
+          )}
           {errorMessage && (
-            <Alert className='mt-5' color='green'>
+            <Alert className='mt-5' color='failure'>
               {errorMessage}
             </Alert>
           )}
