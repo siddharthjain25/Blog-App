@@ -22,7 +22,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector((state) => state.user);
@@ -104,10 +103,16 @@ export default function DashProfile() {
     setUpdateUserSuccess(null);
     if (Object.keys(formData).length === 0) {
       setUpdateUserError('No changes made');
+      setTimeout(() => {
+        setUpdateUserError(null);
+      }, 2500);
       return;
     }
     if (imageFileUploading) {
       setUpdateUserError('Please wait for image to upload');
+      setTimeout(() => {
+        setUpdateUserError(null);
+      }, 2500);
       return;
     }
     try {
@@ -123,13 +128,22 @@ export default function DashProfile() {
       if (!res.ok) {
         dispatch(updateFailure(data.message));
         setUpdateUserError(data.message);
+        setTimeout(() => {
+          setUpdateUserError(null);
+        }, 2500);
       } else {
         dispatch(updateSuccess(data));
         setUpdateUserSuccess("User's profile updated successfully");
+        setTimeout(() => {
+          setUpdateUserSuccess(null);
+        }, 2500);
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
       setUpdateUserError(error.message);
+      setTimeout(() => {
+        setUpdateUserError(null);
+      }, 2500);
     }
   };
   const handleDeleteUser = async () => {
@@ -163,12 +177,18 @@ export default function DashProfile() {
       });
       const data = await res.json();
       if (!res.ok) {
-        console.log(data.message);
+        setUpdateUserError(data.message);
+        setTimeout(() => {
+          setUpdateUserError(null);
+        }, 2500);
       } else {
         dispatch(signoutSuccess());
       }
     } catch (error) {
-      console.log(error.message);
+      setUpdateUserError(error.message);
+      setTimeout(() => {
+        setUpdateUserError(null);
+      }, 2500);
     }
   };
 
@@ -180,7 +200,10 @@ const copyRecoveryCode = async () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
   } catch (error) {
-    console.error('Error copying recovery code:', error);
+    setUpdateUserError('Error copying recovery code');
+    setTimeout(() => {
+      setUpdateUserError(null);
+    }, 2500);
   }
 };
 
@@ -261,7 +284,16 @@ const copyRecoveryCode = async () => {
         >
           {loading ? 'Loading...' : 'Update'}
         </Button>
-        
+        {updateUserSuccess && (
+        <Alert color='success' className='mt-5'>
+          {updateUserSuccess}
+        </Alert>
+        )}
+        {updateUserError && (
+        <Alert color='failure' className='mt-5'>
+          {updateUserError}
+        </Alert>
+        )}
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
             <Button
@@ -295,17 +327,6 @@ const copyRecoveryCode = async () => {
           Sign Out
         </span>
       </div>
-      
-      {updateUserSuccess && (
-        <Alert color='success' className='mt-5'>
-          {updateUserSuccess}
-        </Alert>
-      )}
-      {updateUserError && (
-        <Alert color='failure' className='mt-5'>
-          {updateUserError}
-        </Alert>
-      )}
       {/* {error && (
         <Alert color='failure' className='mt-5'>
           {error}
