@@ -14,9 +14,6 @@ export default function SignUp() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields.');
-    }
     try {
       setLoading(true);
       setErrorMessage(null);
@@ -27,7 +24,11 @@ export default function SignUp() {
       });
       const data = await res.json();
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        setLoading(false);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 2500);
+        return setErrorMessage(data.message); 
       }
       setLoading(false);
       if(res.ok) {
@@ -37,6 +38,9 @@ export default function SignUp() {
         }, 2500);
       }
     } catch (error) {
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 2500);
       setErrorMessage(error.message);
       setLoading(false);
     }

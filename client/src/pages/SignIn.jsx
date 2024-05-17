@@ -21,9 +21,6 @@ export default function SignIn() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!formData.email || !formData.password) {
-    //   return dispatch(signInFailure('Please fill all the fields'));
-    // }
     try {
       setLoading(true);
       dispatch(signInStart());
@@ -35,6 +32,9 @@ export default function SignIn() {
       const data = await res.json();
       if (data.success === false) {
         setErrorMessage(data.message);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 2500);
         setLoading(false);
       }
 
@@ -45,6 +45,9 @@ export default function SignIn() {
       }
     } catch (error) {
       setErrorMessage(error.message);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 2500);
     }
   };
   return (

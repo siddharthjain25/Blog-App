@@ -35,9 +35,11 @@ export default function ForgotPassword() {
         body: JSON.stringify(formData1),
       });
       const data = await res.json();
-      console.log(data);
       if (data.success === false) {
         setErrorMessage(data.message);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 2500);
         setLoading(false);
       }
 
@@ -45,10 +47,16 @@ export default function ForgotPassword() {
         setLoading(false);
         setSuccessMessage(data.message);
         dispatch(passwordReset(data));
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 2500);
         setIsVerfication(true);
       }
     } catch (error) {
       setErrorMessage(error.message);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 2500);
     }
   }
   const handleReset = async (e) => {

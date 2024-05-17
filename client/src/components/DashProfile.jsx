@@ -142,11 +142,17 @@ export default function DashProfile() {
       const data = await res.json();
       if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
+        setTimeout(() => {
+          deleteUserFailure(null);
+        }, 2500);
       } else {
         dispatch(deleteUserSuccess(data));
       }
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
+      setTimeout(() => {
+        deleteUserFailure(null);
+      }, 2500);
     }
   };
 
