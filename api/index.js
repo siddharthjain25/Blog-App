@@ -7,13 +7,9 @@ import postRoutes from './routes/post.route.js';
 import commentRoutes from './routes/comment.route.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import nodemailer from 'nodemailer';
-import otpGenerator from 'otp-generator';
 import User from './models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from './utils/error.js';
-
-const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
 
 dotenv.config();
 
@@ -51,15 +47,26 @@ app.get('*', (req, res) => {
 app.post("/api/verify", async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
+  const { recoveryCode, email } = req.body;
+
+  if (
+    !recoveryCode ||
+    !email ||
+    recoveryCode === '' ||
+    email === ''
+  ) {
+    return next(errorHandler(400, 'All fields are required.'));
+  }
+
   if (!user) {
     //res.status(400).json({ error: "Invalid email address." });
-    next(errorHandler(400, 'Invalid email address'));
+    return next(errorHandler(400, 'Invalid email address'));
   }
 
   if(req.body.recoveryCode == user.recoveryCode){
     //res.json({error: 'Verification Succeed'});
     //next(errorHandler(200, ''));
-    res.json({
+    return res.json({
       message: 'Verification Successful',
       success: true,
       statusCode: 200,

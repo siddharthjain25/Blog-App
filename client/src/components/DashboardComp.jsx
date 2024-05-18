@@ -124,7 +124,7 @@ export default function DashboardComp() {
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
             <h1 className='text-center p-2'>Recent users</h1>
-            <Button outline gradientDuoTone='purpleToPink'>
+            <Button outline className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg">
               <Link to={'/dashboard?tab=users'}>See all</Link>
             </Button>
           </div>
@@ -153,7 +153,7 @@ export default function DashboardComp() {
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
             <h1 className='text-center p-2'>Recent comments</h1>
-            <Button outline gradientDuoTone='purpleToPink'>
+            <Button outline className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg">
               <Link to={'/dashboard?tab=comments'}>See all</Link>
             </Button>
           </div>
@@ -178,7 +178,7 @@ export default function DashboardComp() {
         <div className='flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800'>
           <div className='flex justify-between  p-3 text-sm font-semibold'>
             <h1 className='text-center p-2'>Recent posts</h1>
-            <Button outline gradientDuoTone='purpleToPink'>
+            <Button outline className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg">
               <Link to={'/dashboard?tab=posts'}>See all</Link>
             </Button>
           </div>

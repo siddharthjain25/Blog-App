@@ -278,7 +278,8 @@ const copyRecoveryCode = async () => {
         />
         <Button
           type='submit'
-          gradientDuoTone='purpleToBlue'
+          //gradientDuoTone='purpleToBlue'
+          className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg"
           outline
           disabled={loading || imageFileUploading}
         >
@@ -298,8 +299,7 @@ const copyRecoveryCode = async () => {
           <Link to={'/create-post'}>
             <Button
               type='button'
-              gradientDuoTone='purpleToPink'
-              className='w-full'
+              className="text-white w-full font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg"
             >
               Create a post
             </Button>
