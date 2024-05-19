@@ -20,7 +20,6 @@ export const signup = async (req, res, next) => {
       success: false,
       statusCode: 400,
     })
-    //return next(errorHandler(400, 'All fields are required'));
   }
 
   if (req.body.username) {
@@ -56,7 +55,6 @@ export const signup = async (req, res, next) => {
 
   try {
     await newUser.save();
-    //next(errorHandler(200, 'Signup successful, Please sign-in'));
     res.json({
       message: 'Signup successful, Redirecting to sign-in page.',
       success: true,
@@ -91,9 +89,10 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...rest } = validUser._doc;
 
     res
-      .status(200)
-      .cookie('access_token', token, {
+        .status(200)
+        .cookie('access_token', token, {
         httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
       })
       .json(rest);
   } catch (error) {
@@ -114,9 +113,10 @@ export const google = async (req, res, next) => {
       res
         .status(200)
         .cookie('access_token', token, {
-          httpOnly: true,
-        })
-        .json(rest);
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      })
+      .json(rest);
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
@@ -140,9 +140,10 @@ export const google = async (req, res, next) => {
       res
         .status(200)
         .cookie('access_token', token, {
-          httpOnly: true,
-        })
-        .json(rest);
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      })
+      .json(rest);
     }
   } catch (error) {
     next(error);
