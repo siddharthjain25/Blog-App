@@ -143,7 +143,7 @@ export default function UpdatePost() {
           />
           <Button
             type='button'
-            gradientDuoTone='purpleToBlue'
+            className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg"
             size='sm'
             outline
             onClick={handleUpdloadImage}
@@ -179,7 +179,7 @@ export default function UpdatePost() {
             setFormData({ ...formData, content: value });
           }}
         />
-        <Button type='submit' gradientDuoTone='purpleToPink'>
+        <Button type='submit' className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg">
           Update post
         </Button>
         {publishError && (
