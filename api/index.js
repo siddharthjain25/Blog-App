@@ -101,6 +101,30 @@ app.post("/api/reset-password", async function (req, res, next) {
   }
 });
 
+app.post("/api/posted-by", async function (req, res, next) {
+  try {
+    const user = await User.findOne({ _id: req.body.userId });
+    
+    if (!user) {
+      //res.status(400).json({ error: "Invalid email address." });
+      next(errorHandler(400, '[Deleted User]'));
+    }
+
+    return res.json({
+      username: user.username,
+      profilePicture: user.profilePicture,
+      success: true,
+      statusCode: 200,
+    });    
+    //res.status(200).json({ message: "Password reset successful." });
+    //next(errorHandler(200, 'Password reset successful'));
+  } catch (error) {
+    console.error(error);
+    //res.status(500).json({ error: "An error occurred while resetting password." });
+    next(errorHandler(500, '[Some Error Occured]'));
+  }
+});
+
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';

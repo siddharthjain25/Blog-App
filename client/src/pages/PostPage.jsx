@@ -16,6 +16,7 @@ export default function PostPage() {
   const [userPosts, setUserPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [postIdToDelete, setPostIdToDelete] = useState('');
+  const [username, setUsername] = useState({});
 
   const navigate = useNavigate();
 
@@ -25,6 +26,14 @@ export default function PostPage() {
         setLoading(true);
         const res = await fetch(`/api/post/getposts?slug=${postSlug}`);
         const data = await res.json();
+        const username = await fetch('/api/posted-by', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({userId: data.posts[0].userId}),
+        });
+        const nameData = await username.json();
         if (!res.ok) {
           setError(true);
           setLoading(false);
@@ -32,6 +41,7 @@ export default function PostPage() {
         }
         if (res.ok) {
           setPost(data.posts[0]);
+          setUsername(nameData);
           setLoading(false);
           setError(false);
         }
@@ -107,7 +117,7 @@ export default function PostPage() {
       />
       <div className='flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs'>
         <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
-        {currentUser.isAdmin && (
+        {currentUser && currentUser.isAdmin && (
           <>
             <Link className='text-teal-500 hover:underline' to={`/update-post/${post._id}`}>
               <span>Edit</span>
@@ -130,7 +140,19 @@ export default function PostPage() {
         className='p-3 max-w-2xl mx-auto w-full post-content'
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
-      
+      <div className='flex items-center p-3 border-b border-slate-500 mx-auto w-full max-w-2xl gap-1 my-5 text-green-500 font-extrabold text-xl'>
+          <p>Posted By:</p>
+          <img
+            className='h-7 w-7 object-cover rounded-full'
+            src={username.profilePicture}
+            alt='posters profile picture'
+          />
+          <Link
+            className='font-extrabold text-xl text-cyan-600 hover:underline'
+          >
+            @{username.username}
+          </Link>
+      </div>
       <CommentSection postId={post._id} />
 
       <div className='flex flex-col justify-center items-center mb-5'>
