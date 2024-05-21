@@ -29,7 +29,7 @@ export default function ForgotPassword() {
     
     try {
       setLoading(true);
-      const res = await fetch('/api/verify', {
+      const res = await fetch('/api/user/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData1),
@@ -68,12 +68,13 @@ export default function ForgotPassword() {
         email: formData1.email,
         password: formData2.password
       };
-      const res = await fetch('/api/reset-password', {
+      const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newData),
       });
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
         setErrorMessage(data.message);
         setLoading(false);
@@ -81,8 +82,10 @@ export default function ForgotPassword() {
 
       if (res.ok) {
         setLoading(false);
-        dispatch(passwordReset(data));
-        navigate("/sign-in")
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, 2500);
+        setSuccessMessage(data.message);
       }
     } catch (error) {
       setErrorMessage(error.message);

@@ -26,7 +26,7 @@ export default function PostPage() {
         setLoading(true);
         const res = await fetch(`/api/post/getposts?slug=${postSlug}`);
         const data = await res.json();
-        const username = await fetch('/api/posted-by', {
+        const username = await fetch('/api/post/posted-by', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -138,3 +138,33 @@ export const getUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const verifyUser = async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  const { recoveryCode, email } = req.body;
+
+  if (
+    !recoveryCode ||
+    !email ||
+    recoveryCode === '' ||
+    email === ''
+  ) {
+    return next(errorHandler(400, 'All fields are required.'));
+  }
+
+  if (!user) {
+    return next(errorHandler(400, 'Invalid email address'));
+  }
+
+  if(req.body.recoveryCode == user.recoveryCode){
+    return res.json({
+      message: 'Verification Successful',
+      success: true,
+      statusCode: 200,
+    });
+  }
+  else{
+    next(errorHandler(403, 'Verification Failed'));
+  }
+}

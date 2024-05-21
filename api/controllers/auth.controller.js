@@ -23,7 +23,6 @@ export const signup = async (req, res, next) => {
   }
 
   if (req.body.username) {
-    // Check username availability before update
     const isUsernameAvailable = await User.findOne({ username: req.body.username });
     if (isUsernameAvailable && isUsernameAvailable._id.toString() !== req.params.userId) {
       return next(errorHandler(400, 'Username is already taken'));
@@ -31,7 +30,6 @@ export const signup = async (req, res, next) => {
   }
 
   if (req.body.email) {
-    // Check username availability before update
     const isEmailAvailable = await User.findOne({ email: req.body.email });
     if (isEmailAvailable && isEmailAvailable._id.toString() !== req.params.userId) {
       return next(errorHandler(400, 'Email already exist'));
@@ -149,3 +147,26 @@ export const google = async (req, res, next) => {
     next(error);
   }
 };
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      next(errorHandler(400, 'Invalid email address'));
+    }
+
+    user.password = await bcryptjs.hash(req.body.password, 10);
+
+    await user.save();
+
+    res.json({
+      message: "Password reset successful, Redirecting to sign-in page.",
+      statusCode: 200,
+      success: true
+    })
+  } catch (error) {
+    console.error(error);
+    next(errorHandler(500, 'An error occurred while resetting password.'));
+  }
+}

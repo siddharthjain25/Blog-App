@@ -24,6 +24,10 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
     };
     getUser();
   }, [comment]);
+  
+  // const handleReply = () => {
+
+  // };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -115,9 +119,17 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                     ' ' +
                     (comment.numberOfLikes === 1 ? 'like' : 'likes')}
               </p>
+              {/* <button
+                type='button'
+                onClick={handleReply}
+                className='text-gray-400 hover:text-blue-500'
+              >
+                Reply
+              </button> */}
               {currentUser &&
                 (currentUser._id === comment.userId || currentUser.isAdmin) && (
                   <>
+                    
                     <button
                       type='button'
                       onClick={handleEdit}
