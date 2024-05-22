@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, TextInput, Textarea } from 'flowbite-react';
+import { Alert, Button, Modal, Textarea } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -103,8 +103,7 @@ export default function CommentSection({ postId }) {
         method: 'DELETE',
       });
       if (res.ok) {
-        const data = await res.json();
-        setComments(comments.filter((comment) => comment._id !== commentId));
+        setComments((prevComments) => prevComments.filter(comment => comment._id !== commentId));
       }
     } catch (error) {
       console.log(error.message);
@@ -166,13 +165,12 @@ export default function CommentSection({ postId }) {
         <p className='text-sm my-5'>No comments yet!</p>
       ) : (
         <>
-          <div className='text-sm my-5 flex items-center gap-1'>
+          <div className='text-xl font-extrabold my-5 flex items-center gap-1'>
             <p>Comments</p>
-            <div className='border border-gray-400 py-1 px-2 rounded-sm'>
-              <p>{comments.length}</p>
-            </div>
           </div>
-          {comments.map((comment) => (
+          {comments
+        .filter((comment) => !comment.isAreply)
+        .map((comment) => (
             <Comment
               key={comment._id}
               comment={comment}

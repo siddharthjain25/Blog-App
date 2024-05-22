@@ -2,7 +2,7 @@ import Comment from '../models/comment.model.js';
 
 export const createComment = async (req, res, next) => {
   try {
-    const { content, postId, userId } = req.body;
+    const { content, postId, userId, isAreply, replyTo } = req.body;
 
     if (userId !== req.user.id) {
       return next(
@@ -14,6 +14,8 @@ export const createComment = async (req, res, next) => {
       content,
       postId,
       userId,
+      isAreply,
+      replyTo,
     });
     await newComment.save();
 
@@ -122,5 +124,14 @@ export const getcomments = async (req, res, next) => {
     res.status(200).json({ comments, totalComments, lastMonthComments });
   } catch (error) {
     next(error);
+  }
+};
+
+export const replies = async (req, res, next) => {
+  try {
+    const replies = await Comment.find({ replyTo: req.params.commentId });
+    res.json(replies);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

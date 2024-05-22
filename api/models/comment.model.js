@@ -22,14 +22,14 @@ const commentSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // isAreply: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    // replyTo: {
-    //   type: String,
-    //   default: "null",
-    // },
+    isAreply: {
+      type: Boolean,
+      default: false,
+    },
+    replyTo: {
+      type: String,
+      default: "null",
+    },
   },
   { timestamps: true }
 );
