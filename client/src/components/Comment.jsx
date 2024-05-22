@@ -5,8 +5,9 @@ import { useSelector } from 'react-redux';
 import { Button, Textarea, Modal } from 'flowbite-react';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
-export default function Comment({ comment, onLike, onEdit, onDelete }) {
+export default function Comment({ comment, onLike, onEdit, onDelete, replyToUserId }) {
   const [user, setUser] = useState({});
+  const [replyToUser, setReplyToUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
   const { currentUser } = useSelector((state) => state.user);
@@ -33,6 +34,22 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
       }
     };
 
+    const getReplyToUser = async () => {
+      if (replyToUserId) {
+        try {
+          const res = await fetch(`/api/user/${replyToUserId}`);
+          const data = await res.json();
+          if (res.ok) {
+            setReplyToUser(data);
+          } else {
+            console.error('Failed to fetch replyTo user:', data.message);
+          }
+        } catch (error) {
+          console.error('Error fetching replyTo user:', error.message);
+        }
+      }
+    };
+
     const getReplies = async () => {
       try {
         const res = await fetch(`/api/comment/replies/${comment._id}`);
@@ -48,8 +65,9 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
     };
 
     getUser();
+    getReplyToUser();
     getReplies();
-  }, [comment]);
+  }, [comment, replyToUserId]);
 
   const handleReplyButton = () => {
     setReplyForm(true);
@@ -183,7 +201,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
   };
 
   return (
-    <div className='flex flex-col p-4 border-b dark:border-gray-600 text-sm'>
+    <div className='flex flex-col p-4 border-b dark:border-gray-600 text-sm pl-0 max-w-full'>
       <div className='flex items-start'>
         <div className='flex-shrink-0 mr-3'>
           <img
@@ -201,6 +219,11 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
               {moment(comment.createdAt).fromNow()}
             </span>
           </div>
+          {replyToUser && (
+            <p className='text-xs text-gray-400 mb-2'>
+              Replied to @{replyToUser.username}
+            </p>
+          )}
           {isEditing ? (
             <>
               <Textarea
@@ -344,7 +367,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
           </div>
         </Modal.Body>
       </Modal>
-      <div className='ml-6'>
+      <div className='pl-2'>
         {replies.map((reply) => (
           <Comment
             key={reply._id}
@@ -352,6 +375,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
             onLike={handleLike}
             onEdit={onEdit}
             onDelete={() => confirmDeleteReply(reply._id)}
+            replyToUserId={comment.userId} // Pass the userId of the original comment
           />
         ))}
       </div>
