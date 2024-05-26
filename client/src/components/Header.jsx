@@ -113,12 +113,22 @@ export default function Header() {
       </div>
       <Navbar.Collapse>
       <ul className='mt-4 flex flex-col items-center md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium'>
-        <Navbar.Link active={path === '/'} as={'div'} style={{backgroundColor: 'transparent'}}>
+        {theme === 'light' ? <>
+          <Navbar.Link active={path === '/'} as={'div'} style={{backgroundColor: 'transparent', color: 'black'}}>
+          <Link to='/'>Home</Link>
+        </Navbar.Link>
+        <Navbar.Link active={path === '/about'} as={'div'} style={{backgroundColor: 'transparent', color: 'black'}}>
+          <Link to='/about'>About</Link>
+        </Navbar.Link>
+        </> : <>
+          <Navbar.Link active={path === '/'} as={'div'} style={{backgroundColor: 'transparent'}}>
           <Link to='/'>Home</Link>
         </Navbar.Link>
         <Navbar.Link active={path === '/about'} as={'div'} style={{backgroundColor: 'transparent'}}>
           <Link to='/about'>About</Link>
         </Navbar.Link>
+        </>}
+        
         {currentUser && currentUser.isAdmin ? 
           <Button
               type='button'

@@ -11,6 +11,7 @@ import { useRef, useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function CreatePost() {
   const [file, setFile] = useState(null);
@@ -19,9 +20,9 @@ export default function CreatePost() {
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
   const editorRef = useRef(null);
-
+  const [progress, setProgress] = useState(100);
   const navigate = useNavigate();
-
+  
   const handleUpdloadImage = async () => {
     try {
       if (!file) {
@@ -61,6 +62,7 @@ export default function CreatePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setProgress(10);
       const res = await fetch('/api/post/create', {
         method: 'POST',
         headers: {
@@ -68,22 +70,31 @@ export default function CreatePost() {
         },
         body: JSON.stringify(formData),
       });
+      setProgress(40);
       const data = await res.json();
       if (!res.ok) {
         setPublishError(data.message);
+        setProgress(100);
         return;
       }
 
       if (res.ok) {
         setPublishError(null);
         navigate(`/post/${data.slug}`);
+        setProgress(100);
       }
     } catch (error) {
       setPublishError('Something went wrong');
+      setProgress(100);
     }
   };
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <h1 className='text-center text-3xl my-7 font-semibold'>Create a post</h1>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>

@@ -1,20 +1,30 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import PostCard from '../components/PostCard';
+import LoadingBar from 'react-top-loading-bar'
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setProgress(progress + 20);
       const res = await fetch('/api/post/getPosts');
       const data = await res.json();
+      setProgress(progress + 60);
       setPosts(data.posts);
+      setProgress(progress + 100);
     };
     fetchPosts();
   }, []);
   return (
     <div>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className='flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto '>
         <h1 className='text-2xl font-bold lg:text-5xl'>Welcome to Xspark Blog</h1>
         <p className='text-gray-500 text-xs sm:text-sm'>

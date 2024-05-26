@@ -22,6 +22,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector((state) => state.user);
@@ -35,6 +36,8 @@ export default function DashProfile() {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({});
   const filePickerRef = useRef();
+  const [progress, setProgress] = useState(0);
+
   const dispatch = useDispatch();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -44,9 +47,12 @@ export default function DashProfile() {
     }
   };
   useEffect(() => {
+    setProgress(10);
     if (imageFile) {
       uploadImage();
+      setProgress(100);
     }
+    setProgress(100);
   }, [imageFile]);
 
   const uploadImage = async () => {
@@ -101,10 +107,12 @@ export default function DashProfile() {
     e.preventDefault();
     setUpdateUserError(null);
     setUpdateUserSuccess(null);
+    setProgress(10);
     if (Object.keys(formData).length === 0) {
-      setUpdateUserError('No changes made');
+      setUpdateUserSuccess('No changes made');
+      setProgress(100);
       setTimeout(() => {
-        setUpdateUserError(null);
+        setUpdateUserSuccess(null);
       }, 2500);
       return;
     }
@@ -117,6 +125,7 @@ export default function DashProfile() {
     }
     try {
       dispatch(updateStart());
+      setProgress(10);
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: 'PUT',
         headers: {
@@ -124,15 +133,18 @@ export default function DashProfile() {
         },
         body: JSON.stringify(formData),
       });
+      setProgress(30);
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateFailure(data.message));
         setUpdateUserError(data.message);
+        setProgress(100);
         setTimeout(() => {
           setUpdateUserError(null);
         }, 2500);
       } else {
         dispatch(updateSuccess(data));
+        setProgress(100);
         setUpdateUserSuccess("User's profile updated successfully");
         setTimeout(() => {
           setUpdateUserSuccess(null);
@@ -141,6 +153,7 @@ export default function DashProfile() {
     } catch (error) {
       dispatch(updateFailure(error.message));
       setUpdateUserError(error.message);
+      setProgress(100);
       setTimeout(() => {
         setUpdateUserError(null);
       }, 2500);
@@ -150,20 +163,25 @@ export default function DashProfile() {
     setShowModal(false);
     try {
       dispatch(deleteUserStart());
+      setProgress(10);
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: 'DELETE',
       });
+      setProgress(40);
       const data = await res.json();
       if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
+        setProgress(100);
         setTimeout(() => {
           deleteUserFailure(null);
         }, 2500);
       } else {
         dispatch(deleteUserSuccess(data));
+        setProgress(100);
       }
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
+      setProgress(100);
       setTimeout(() => {
         deleteUserFailure(null);
       }, 2500);
@@ -172,20 +190,25 @@ export default function DashProfile() {
 
   const handleSignout = async () => {
     try {
+      setProgress(10);
       const res = await fetch('/api/user/signout', {
         method: 'POST',
       });
+      setProgress(50);
       const data = await res.json();
       if (!res.ok) {
         setUpdateUserError(data.message);
+        setProgress(100);
         setTimeout(() => {
           setUpdateUserError(null);
         }, 2500);
       } else {
-        dispatch(signoutSuccess());
+        setProgress(100);
+        dispatch(signoutSuccess()); 
       }
     } catch (error) {
       setUpdateUserError(error.message);
+      setProgress(100);
       setTimeout(() => {
         setUpdateUserError(null);
       }, 2500);
@@ -209,6 +232,11 @@ const copyRecoveryCode = async () => {
 
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input

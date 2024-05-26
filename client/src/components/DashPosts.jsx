@@ -34,17 +34,21 @@ export default function DashPosts() {
   const handleShowMore = async () => {
     const startIndex = userPosts.length;
     try {
+      setProgress(10);
       const res = await fetch(
         `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
       );
+      setProgress(50);
       const data = await res.json();
       if (res.ok) {
+        setProgress(100);
         setUserPosts((prev) => [...prev, ...data.posts]);
         if (data.posts.length < 9) {
           setShowMore(false);
         }
       }
     } catch (error) {
+      setProgress(100);
       console.log(error.message);
     }
   };
@@ -52,21 +56,26 @@ export default function DashPosts() {
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
+      setProgress(10);
       const res = await fetch(
         `/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
         {
           method: 'DELETE',
         }
       );
+      setProgress(50);
       const data = await res.json();
       if (!res.ok) {
+        setProgress(100);
         console.log(data.message);
       } else {
         setUserPosts((prev) =>
           prev.filter((post) => post._id !== postIdToDelete)
         );
+        setProgress(100);
       }
     } catch (error) {
+      setProgress(100);
       console.log(error.message);
     }
   };

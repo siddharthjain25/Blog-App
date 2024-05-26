@@ -2,7 +2,7 @@ import { Modal, Table, Button } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function DashComments() {
   const { currentUser } = useSelector((state) => state.user);
@@ -10,6 +10,8 @@ export default function DashComments() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [commentIdToDelete, setCommentIdToDelete] = useState('');
+  const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -33,17 +35,21 @@ export default function DashComments() {
   const handleShowMore = async () => {
     const startIndex = comments.length;
     try {
+      setProgress(10);
       const res = await fetch(
         `/api/comment/getcomments?startIndex=${startIndex}`
       );
+      setProgress(50);
       const data = await res.json();
       if (res.ok) {
+        setProgress(100);
         setComments((prev) => [...prev, ...data.comments]);
         if (data.comments.length < 9) {
           setShowMore(false);
         }
       }
     } catch (error) {
+      setProgress(100);
       console.log(error.message);
     }
   };
@@ -51,28 +57,38 @@ export default function DashComments() {
   const handleDeleteComment = async () => {
     setShowModal(false);
     try {
+      setProgress(10);
       const res = await fetch(
         `/api/comment/deleteComment/${commentIdToDelete}`,
         {
           method: 'DELETE',
         }
       );
+      setProgress(40);
       const data = await res.json();
       if (res.ok) {
         setComments((prev) =>
           prev.filter((comment) => comment._id !== commentIdToDelete)
         );
+        setProgress(100);
         setShowModal(false);
       } else {
+        setProgress(100);
         console.log(data.message);
       }
     } catch (error) {
+      setProgress(100);
       console.log(error.message);
     }
   };
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       {currentUser.isAdmin && comments.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>

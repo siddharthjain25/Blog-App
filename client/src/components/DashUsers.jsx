@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { FaCheck, FaTimes } from 'react-icons/fa';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function DashUsers() {
   const { currentUser } = useSelector((state) => state.user);
@@ -10,6 +11,8 @@ export default function DashUsers() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState('');
+  const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -33,38 +36,52 @@ export default function DashUsers() {
   const handleShowMore = async () => {
     const startIndex = users.length;
     try {
+      setProgress(10);
       const res = await fetch(`/api/user/getusers?startIndex=${startIndex}`);
+      setProgress(50);
       const data = await res.json();
       if (res.ok) {
+        setProgress(100);
         setUsers((prev) => [...prev, ...data.users]);
         if (data.users.length < 9) {
           setShowMore(false);
         }
       }
     } catch (error) {
+      setProgress(100);
       console.log(error.message);
     }
   };
 
   const handleDeleteUser = async () => {
     try {
+      setProgress(10);
         const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
             method: 'DELETE',
         });
+        setProgress(50);
         const data = await res.json();
         if (res.ok) {
+            setProgress(100);
             setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
             setShowModal(false);
         } else {
+            setProgress(100);
             console.log(data.message);
         }
     } catch (error) {
+        setProgress(100);
         console.log(error.message);
     }
   };
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       {currentUser.isAdmin && users.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>

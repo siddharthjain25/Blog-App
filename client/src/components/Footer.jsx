@@ -62,7 +62,7 @@ export default function FooterCom() {
         <Footer.Divider />
         <div className='w-full sm:flex sm:items-center sm:justify-between'>
           <Footer.Copyright
-            href='#'
+            href='/'
             by="Xspark Blog"
             year={new Date().getFullYear()}
           />

@@ -12,6 +12,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function UpdatePost() {
   const [file, setFile] = useState(null);
@@ -21,6 +22,7 @@ export default function UpdatePost() {
   const [publishError, setPublishError] = useState(null);
   const { postId } = useParams();
   const editorRef = useRef(null);
+  const [progress, setProgress] = useState(0);
 
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -28,16 +30,20 @@ export default function UpdatePost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        setProgress(10);
         const res = await fetch(`/api/post/getposts?postId=${postId}`);
+        setProgress(40);
         const data = await res.json();
         if (!res.ok) {
-          console.log(data.message);
+          setProgress(100);
           setPublishError(data.message);
           return;
         }
         setPublishError(null);
         setFormData(data.posts[0]);
+        setProgress(100);
       } catch (error) {
+        setProgress(100);
         console.log(error.message);
       }
     };
@@ -78,6 +84,7 @@ export default function UpdatePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setProgress(10);
       const res = await fetch(`/api/post/updatepost/${postId}/${currentUser._id}`, {
         method: 'PUT',
         headers: {
@@ -85,20 +92,29 @@ export default function UpdatePost() {
         },
         body: JSON.stringify(formData),
       });
+      setProgress(40);
       const data = await res.json();
       if (!res.ok) {
+        setProgress(100);
         setPublishError(data.message);
         return;
       }
       setPublishError(null);
+      setProgress(100);
       navigate(`/post/${data.slug}`);
     } catch (error) {
+      setProgress(100);
       setPublishError('Something went wrong');
     }
   };
 
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <h1 className='text-center text-3xl my-7 font-semibold'>Update post</h1>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>

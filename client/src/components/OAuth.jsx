@@ -5,12 +5,14 @@ import { app } from '../firebase';
 import { useDispatch } from 'react-redux';
 import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import LoadingBar from 'react-top-loading-bar'
 
 export default function OAuth() {
     const auth = getAuth(app);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         const handleRedirectResult = async () => {
@@ -28,8 +30,11 @@ export default function OAuth() {
                     });
                     const data = await res.json();
                     if (res.ok) {
+                        setProgress(40);
                         dispatch(signInSuccess(data));
+                        setProgress(60);
                         navigate('/');
+                        setProgress(100);
                     }
                 }
             } catch (error) {
@@ -47,7 +52,12 @@ export default function OAuth() {
     };
 
     return (
-        <Button
+        <>
+            <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      /><Button
             type='button'
             className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg"
             outline
@@ -56,5 +66,7 @@ export default function OAuth() {
             <AiFillGoogleCircle className='w-6 h-6 mr-2'/>
             Continue with Google
         </Button>
+        </>
+        
     );
 }

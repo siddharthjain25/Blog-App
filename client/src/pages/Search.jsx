@@ -2,6 +2,7 @@ import { Button, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PostCard from '../components/PostCard';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function Search() {
   const [sidebarData, setSidebarData] = useState({
@@ -10,19 +11,22 @@ export default function Search() {
     category: 'uncategorized',
   });
 
-  console.log(sidebarData);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
-
+  const [progress, setProgress] = useState(0);
   const location = useLocation();
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    setProgress(10);
     const urlParams = new URLSearchParams(location.search);
+    setProgress(30);
     const searchTermFromUrl = urlParams.get('searchTerm');
+    setProgress(40);
     const sortFromUrl = urlParams.get('sort');
+    setProgress(60);
     const categoryFromUrl = urlParams.get('category');
     if (searchTermFromUrl || sortFromUrl || categoryFromUrl) {
       setSidebarData({
@@ -31,19 +35,24 @@ export default function Search() {
         sort: sortFromUrl,
         category: categoryFromUrl,
       });
+      setProgress(100);
     }
 
     const fetchPosts = async () => {
       setLoading(true);
+      setProgress(10);
       const searchQuery = urlParams.toString();
+      setProgress(50);
       const res = await fetch(`/api/post/getposts?${searchQuery}`);
       if (!res.ok) {
         setLoading(false);
+        setProgress(100);
         return;
       }
       if (res.ok) {
         const data = await res.json();
         setPosts(data.posts);
+        setProgress(100);
         setLoading(false);
         if (data.posts.length === 9) {
           setShowMore(true);
@@ -71,26 +80,35 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setProgress(30);
     const urlParams = new URLSearchParams(location.search);
     urlParams.set('searchTerm', sidebarData.searchTerm);
+    setProgress(60);
     urlParams.set('sort', sidebarData.sort);
     urlParams.set('category', sidebarData.category);
+    setProgress(80);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+    setProgress(100);
   };
 
   const handleShowMore = async () => {
+    setProgress(30);
     const numberOfPosts = posts.length;
     const startIndex = numberOfPosts;
+    setProgress(40);
     const urlParams = new URLSearchParams(location.search);
     urlParams.set('startIndex', startIndex);
+    setProgress(60);
     const searchQuery = urlParams.toString();
     const res = await fetch(`/api/post/getposts?${searchQuery}`);
     if (!res.ok) {
+      setProgress(100);
       return;
     }
     if (res.ok) {
       const data = await res.json();
+      setProgress(100);
       setPosts([...posts, ...data.posts]);
       if (data.posts.length === 9) {
         setShowMore(true);
@@ -102,6 +120,11 @@ export default function Search() {
 
   return (
     <div className='flex flex-col md:flex-row'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className='p-7 border-b md:border-r md:min-h-screen border-gray-500'>
         <form className='flex flex-col gap-8' onSubmit={handleSubmit}>
           <div className='flex   items-center gap-2'>

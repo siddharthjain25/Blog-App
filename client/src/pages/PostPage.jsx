@@ -5,6 +5,7 @@ import CommentSection from '../components/CommentSection';
 import PostCard from '../components/PostCard';
 import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -19,13 +20,17 @@ export default function PostPage() {
   const [username, setUsername] = useState({});
 
   const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         setLoading(true);
+        setProgress(10);
         const res = await fetch(`/api/post/getposts?slug=${postSlug}`);
+        setProgress(20);
         const data = await res.json();
+        setProgress(40);
         const username = await fetch('/api/post/posted-by', {
           method: 'POST',
           headers: {
@@ -33,7 +38,9 @@ export default function PostPage() {
           },
           body: JSON.stringify({userId: data.posts[0].userId}),
         });
+        setProgress(60);
         const nameData = await username.json();
+        setProgress(80);
         if (!res.ok) {
           setError(true);
           setLoading(false);
@@ -42,6 +49,7 @@ export default function PostPage() {
         if (res.ok) {
           setPost(data.posts[0]);
           setUsername(nameData);
+          setProgress(100);
           setLoading(false);
           setError(false);
         }
@@ -99,6 +107,11 @@ export default function PostPage() {
     );
   return (
     <main className='p-3 flex flex-col max-w-6xl mx-auto min-h-screen'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <h1 className='text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl'>
         {post && post.title}
       </h1>

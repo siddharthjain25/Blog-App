@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import {
   passwordReset
 } from '../redux/user/userSlice';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function ForgotPassword() {
   const [formData1, setFormData1] = useState({});
@@ -15,7 +16,7 @@ export default function ForgotPassword() {
   const dispatch = useDispatch();
   const [isVerification, setIsVerfication] = useState(null);
   const navigate = useNavigate();
-
+  const [progress, setProgress] = useState(100);
   const handleChange1 = (e) => {
     setFormData1({ ...formData1, [e.target.id]: e.target.value.trim() });
   };
@@ -29,14 +30,17 @@ export default function ForgotPassword() {
     
     try {
       setLoading(true);
+      setProgress(10);
       const res = await fetch('/api/user/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData1),
       });
+      setProgress(40);
       const data = await res.json();
       if (data.success === false) {
         setErrorMessage(data.message);
+        setProgress(100);
         setTimeout(() => {
           setErrorMessage(null);
         }, 2500);
@@ -46,6 +50,7 @@ export default function ForgotPassword() {
       if (res.ok) {
         setLoading(false);
         setSuccessMessage(data.message);
+        setProgress(100);
         dispatch(passwordReset(data));
         setTimeout(() => {
           setSuccessMessage(null);
@@ -54,6 +59,7 @@ export default function ForgotPassword() {
       }
     } catch (error) {
       setErrorMessage(error.message);
+      setProgress(100);
       setTimeout(() => {
         setErrorMessage(null);
       }, 2500);
@@ -64,36 +70,46 @@ export default function ForgotPassword() {
     
     try {
       setLoading(true);
+      setProgress(10);
       const newData = {
         email: formData1.email,
         password: formData2.password
       };
+      setProgress(20);
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newData),
       });
+      setProgress(60);
       const data = await res.json();
-      console.log(data);
       if (data.success === false) {
         setErrorMessage(data.message);
+        setProgress(100);
         setLoading(false);
       }
 
       if (res.ok) {
         setLoading(false);
+        setProgress(100);
         setTimeout(() => {
           navigate("/sign-in");
         }, 2500);
         setSuccessMessage(data.message);
       }
     } catch (error) {
+      setProgress(100);
       setErrorMessage(error.message);
     }
   }
 
   return (
     <div className='min-h-screen mt-20'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
         {/* left */}
         <div className='flex-1'>
@@ -103,9 +119,6 @@ export default function ForgotPassword() {
             </span>
             Blog
           </Link>
-          <p className='text-sm mt-5'>
-          You can sign up with your email and password or with Google.
-          </p>
         </div>
         {/* right */}
 

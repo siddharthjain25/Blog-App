@@ -8,6 +8,7 @@ import {
   signInFailure,
 } from '../redux/user/userSlice';
 import OAuth from '../components/OAuth';
+import LoadingBar from 'react-top-loading-bar';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -16,6 +17,8 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [progress, setProgress] = useState(100);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
@@ -23,15 +26,18 @@ export default function SignIn() {
     e.preventDefault();
     try {
       setLoading(true);
+      setProgress(10);
       dispatch(signInStart());
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+      setProgress(40);
       const data = await res.json();
       if (data.success === false) {
         setErrorMessage(data.message);
+        setProgress(100);
         setTimeout(() => {
           setErrorMessage(null);
         }, 2500);
@@ -40,11 +46,14 @@ export default function SignIn() {
 
       if (res.ok) {
         setLoading(true);
+        setProgress(90);
         dispatch(signInSuccess(data));
+        setProgress(100);
         navigate('/');
       }
     } catch (error) {
       setErrorMessage(error.message);
+      setProgress(100);
       setTimeout(() => {
         setErrorMessage(null);
       }, 2500);
@@ -52,6 +61,11 @@ export default function SignIn() {
   };
   return (
     <div className='min-h-screen mt-20'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
         {/* left */}
         <div className='flex-1'>
@@ -61,9 +75,6 @@ export default function SignIn() {
             </span>
             Blog
           </Link>
-          <p className='text-sm mt-5'>
-          You can sign up with your email and password or with Google.
-          </p>
         </div>
         {/* right */}
 

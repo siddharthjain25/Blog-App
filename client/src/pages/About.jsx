@@ -1,6 +1,15 @@
+import { useState } from 'react';
+import LoadingBar from 'react-top-loading-bar';
+
 export default function About() {
+  const [progress, setProgress] = useState(100);
   return (
     <div className='min-h-screen flex items-center justify-center'>
+      <LoadingBar
+        color='cyan'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className='max-w-2xl mx-auto p-3 text-center'>
         <div>
           <h1 className='text-3xl font font-semibold text-center my-7'>
