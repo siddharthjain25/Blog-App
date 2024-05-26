@@ -4,6 +4,9 @@ import { FaThumbsUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Button, Textarea, Modal } from 'flowbite-react';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import DOMPurify from 'dompurify';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default function Comment({ comment, onLike, onEdit, onDelete, replyToUserId }) {
   const [user, setUser] = useState({});
@@ -109,13 +112,9 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
       console.error('Error liking/unliking comment:', error.message);
     }
   };
-  
-  
+
   const handleReply = async (e) => {
     e.preventDefault();
-    if (reply.length > 200) {
-      return;
-    }
     setLoading(true);
     try {
       const res = await fetch('/api/comment/create', {
@@ -200,6 +199,9 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
     setShowModal(true);
   };
 
+  // Sanitize the comment content
+  const sanitizedContent = DOMPurify.sanitize(comment.content);
+
   return (
     <div className='flex flex-col p-4 border-b dark:border-gray-600 text-sm pl-0 max-w-full'>
       <div className='flex items-start'>
@@ -226,11 +228,27 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
           )}
           {isEditing ? (
             <>
-              <Textarea
-                className='mb-2'
+              <div style={{height: '350px'}}>
+              <ReactQuill
+                style={{height: '250px'}}
                 value={editedContent}
-                onChange={(e) => setEditedContent(e.target.value)}
+                className='mb-2'
+                onChange={setEditedContent}
+                placeholder='Add a comment...'
+                modules={{
+                  toolbar: [
+                    [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                    [{size: []}],
+                    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                    [{'list': 'ordered'}, {'list': 'bullet'}, 
+                     {'indent': '-1'}, {'indent': '+1'}],
+                    ['link', 'image', 'video'],
+                    ['clean']                                         
+                  ],
+                }}
               />
+              </div>
+              
               <div className='flex justify-end gap-2 text-xs'>
                 <Button
                   type='button'
@@ -255,7 +273,10 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
             </>
           ) : (
             <>
-              <p className='text-gray-500 pb-2'>{comment.content}</p>
+              <p
+                className='text-gray-500 pb-2'
+                dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+              />
               <div className='flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2'>
                 <button
                   type='button'
@@ -307,34 +328,43 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
           {currentUser && replyForm && (
             <div className='flex items-center gap-1 my-5 text-gray-500 text-sm'>
               <form
-                    onSubmit={handleReply}
-                    className='border border-teal-500 rounded-md p-3 w-full'
-                  >
-                    <Textarea
-                      placeholder='Add a reply...'
-                      rows='3'
-                      maxLength='200'
-                      onChange={(e) => setReply(e.target.value)}
-                      value={reply}
-                      disabled={loading}
-                    />
-                    <div className='flex justify-between items-center mt-5'>
-                      <p className='text-gray-500 text-xs'>
-                        {200 - reply.length} characters remaining
-                      </p>
-                      <div className='flex space-x-3 items-center'>
-                        <Button outline className="text-white font-extrabold bg-gradient-to-r from-red-500 to-red-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg" onClick={closeReplyForm} disabled={loading}>
-                        Cancel
-                      </Button>
-                      <Button outline className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg" type='submit' disabled={loading}>
-                        Submit
-                      </Button>
-                      </div>
-                    </div>
-                    {commentError && (
-                      <p className='text-red-500 mt-2'>{commentError}</p>
-                    )}
-                  </form>
+                onSubmit={handleReply}
+                className='border border-teal-500 rounded-md p-3 w-full'
+              >
+                <div style={{height: '350px'}}>
+                <ReactQuill
+                  style={{height: '250px'}}
+                  value={reply}
+                  className='mb-2'
+                  onChange={setReply}
+                  placeholder='Add a reply...'
+                  modules={{
+                    toolbar: [
+                      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                      [{size: []}],
+                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                      [{'list': 'ordered'}, {'list': 'bullet'}, 
+                       {'indent': '-1'}, {'indent': '+1'}],
+                      ['link', 'image', 'video'],
+                      ['clean']                                         
+                    ],
+                  }}
+                />
+              </div>
+                <div className='flex justify-between items-center mt-5'>
+                  <div className='flex space-x-3 items-center'>
+                    <Button outline className="text-white font-extrabold bg-gradient-to-r from-red-500 to-red-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg" onClick={closeReplyForm} disabled={loading}>
+                      Cancel
+                    </Button>
+                    <Button outline className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg" type='submit' disabled={loading}>
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+                {commentError && (
+                  <p className='text-red-500 mt-2'>{commentError}</p>
+                )}
+              </form>
             </div>
           )}
         </div>

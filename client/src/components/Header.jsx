@@ -75,7 +75,7 @@ export default function Header() {
       </Button>
       <div className='flex gap-2 md:order-2'>
         <Button
-          className='w-12 h-10 hidden sm:inline'
+          className='w-12 h-10 sm:inline'
           color='gray'
           pill
           onClick={() => dispatch(toggleTheme())}
@@ -113,10 +113,10 @@ export default function Header() {
       </div>
       <Navbar.Collapse>
       <ul className='mt-4 flex flex-col items-center md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium'>
-        <Navbar.Link active={path === '/'} as={'div'}>
+        <Navbar.Link active={path === '/'} as={'div'} style={{backgroundColor: 'transparent'}}>
           <Link to='/'>Home</Link>
         </Navbar.Link>
-        <Navbar.Link active={path === '/about'} as={'div'}>
+        <Navbar.Link active={path === '/about'} as={'div'} style={{backgroundColor: 'transparent'}}>
           <Link to='/about'>About</Link>
         </Navbar.Link>
         {currentUser && currentUser.isAdmin ? 

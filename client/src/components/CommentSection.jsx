@@ -1,9 +1,11 @@
-import { Alert, Button, Modal, Textarea } from 'flowbite-react';
+import { Alert, Button, Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Comment from './Comment';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,11 +15,10 @@ export default function CommentSection({ postId }) {
   const [showModal, setShowModal] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (comment.length > 200) {
-      return;
-    }
+    
     try {
       const res = await fetch('/api/comment/create', {
         method: 'POST',
@@ -109,6 +110,7 @@ export default function CommentSection({ postId }) {
       console.log(error.message);
     }
   };
+
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
       {currentUser ? (
@@ -139,17 +141,29 @@ export default function CommentSection({ postId }) {
           onSubmit={handleSubmit}
           className='border border-teal-500 rounded-md p-3'
         >
-          <Textarea
-            placeholder='Add a comment...'
-            rows='3'
-            maxLength='200'
-            onChange={(e) => setComment(e.target.value)}
+          <div style={{height: '330px'}}>
+          <ReactQuill
+            style={{height: '250px'}}
             value={comment}
+            onChange={setComment}
+            placeholder='Add a comment...'
+            modules={{
+              toolbar: [
+                [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                [{size: []}],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [{'list': 'ordered'}, {'list': 'bullet'}, 
+                 {'indent': '-1'}, {'indent': '+1'}],
+                ['link', 'image', 'video'],
+                ['clean']                                         
+              ],
+            }}
           />
+          </div>
           <div className='flex justify-between items-center mt-5'>
-            <p className='text-gray-500 text-xs'>
-              {200 - comment.length} characters remaining
-            </p>
+            {/* <p className='text-gray-500 text-xs'>
+              {5000 - comment.length} characters remaining
+            </p> */}
             <Button outline className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg" type='submit'>
               Submit
             </Button>
@@ -169,19 +183,19 @@ export default function CommentSection({ postId }) {
             <p>Comments</p>
           </div>
           {comments
-        .filter((comment) => !comment.isAreply)
-        .map((comment) => (
-            <Comment
-              key={comment._id}
-              comment={comment}
-              onLike={handleLike}
-              onEdit={handleEdit}
-              onDelete={(commentId) => {
-                setShowModal(true);
-                setCommentToDelete(commentId);
-              }}
-            />
-          ))}
+            .filter((comment) => !comment.isAreply)
+            .map((comment) => (
+              <Comment
+                key={comment._id}
+                comment={comment}
+                onLike={handleLike}
+                onEdit={handleEdit}
+                onDelete={(commentId) => {
+                  setShowModal(true);
+                  setCommentToDelete(commentId);
+                }}
+              />
+            ))}
         </>
       )}
       <Modal
