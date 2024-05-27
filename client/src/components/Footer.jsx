@@ -28,13 +28,6 @@ export default function FooterCom() {
                 >
                   Siddharth Jain
                 </Footer.Link>
-                <Footer.Link
-                  href='/about'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  Xspark Blog
-                </Footer.Link>
               </Footer.LinkGroup>
             </div>
             <div>
