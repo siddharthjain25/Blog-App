@@ -117,29 +117,22 @@ export default function Header() {
           <Navbar.Link active={path === '/'} as={'div'} style={{backgroundColor: 'transparent', color: 'black'}}>
           <Link to='/'>Home</Link>
         </Navbar.Link>
-        <Navbar.Link active={path === '/about'} as={'div'} style={{backgroundColor: 'transparent', color: 'black'}}>
-          <Link to='/about'>About</Link>
-        </Navbar.Link>
         </> : <>
           <Navbar.Link active={path === '/'} as={'div'} style={{backgroundColor: 'transparent'}}>
           <Link to='/'>Home</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === '/about'} as={'div'} style={{backgroundColor: 'transparent'}}>
-          <Link to='/about'>About</Link>
         </Navbar.Link>
         </>}
         
         {currentUser && currentUser.isAdmin ? 
           <Button
               type='button'
-              //gradientDuoTone='purpleToPink'
               className="text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg"
             >
               <Link to={'/create-post'}>
                 Create a post
               </Link>
             </Button>
-         : <BuyMeACoffeeButton />}
+         : ""}
       </ul>
       </Navbar.Collapse>
     </Navbar>
