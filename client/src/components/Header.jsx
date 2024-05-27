@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useEffect, useState } from 'react';
-import BuyMeACoffeeButton from './BuyMeACoffeeButton';
+import logo from './new-xspark-logo.png';
 
 export default function Header() {
   const path = useLocation().pathname;
@@ -55,10 +55,7 @@ export default function Header() {
         to='/'
         className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'
       >
-        <span className='px-2 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg text-white'>
-          Xspark
-        </span>
-        Blog
+        <img src={logo} style={{height: '40px'}}></img>
       </Link>
       <form onSubmit={handleSubmit}>
         <TextInput

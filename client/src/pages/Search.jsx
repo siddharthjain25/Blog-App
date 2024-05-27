@@ -8,7 +8,7 @@ export default function Search() {
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',
     sort: 'desc',
-    category: 'uncategorized',
+    category: '',
   });
 
   const [posts, setPosts] = useState([]);
@@ -73,7 +73,7 @@ export default function Search() {
       setSidebarData({ ...sidebarData, sort: order });
     }
     if (e.target.id === 'category') {
-      const category = e.target.value || 'uncategorized';
+      const category = e.target.value || '';
       setSidebarData({ ...sidebarData, category });
     }
   };
@@ -140,26 +140,18 @@ export default function Search() {
             />
           </div>
           <div className='flex items-center gap-2'>
-            <label className='font-semibold'>Sort:</label>
-            <Select onChange={handleChange} value={sidebarData.sort} id='sort'>
-              <option value='desc'>Latest</option>
-              <option value='asc'>Oldest</option>
-            </Select>
-          </div>
-          <div className='flex items-center gap-2'>
-            <label className='font-semibold'>Category:</label>
-            <Select
-              onChange={handleChange}
+            <label className='whitespace-nowrap font-semibold'>
+              Category:
+            </label>
+            <TextInput
+              type='text'
+              placeholder='Category'
               value={sidebarData.category}
               id='category'
-            >
-              <option value='uncategorized'>Uncategorized</option>
-              <option value='reactjs'>React.js</option>
-              <option value='nextjs'>Next.js</option>
-              <option value='javascript'>JavaScript</option>
-            </Select>
+              onChange={handleChange}
+            />
           </div>
-          <Button type='submit' outline gradientDuoTone='purpleToPink'>
+          <Button type='submit' outline className='text-white font-extrabold bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg'>
             Apply Filters
           </Button>
         </form>

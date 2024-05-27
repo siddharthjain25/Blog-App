@@ -9,6 +9,7 @@ import {
 } from '../redux/user/userSlice';
 import OAuth from '../components/OAuth';
 import LoadingBar from 'react-top-loading-bar';
+import logo from './new-xspark-logo.png';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -70,10 +71,7 @@ export default function SignIn() {
         {/* left */}
         <div className='flex-1'>
           <Link to='/' className='font-bold dark:text-white text-4xl'>
-            <span className='px-2 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg text-white'>
-              Xspark
-            </span>
-            Blog
+          <img src={logo} style={{height: '80px'}}></img>
           </Link>
         </div>
         {/* right */}
