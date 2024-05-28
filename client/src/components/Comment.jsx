@@ -203,7 +203,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
   const sanitizedContent = DOMPurify.sanitize(comment.content);
 
   return (
-    <div className='flex flex-col p-4 border-b dark:border-gray-600 text-sm pl-0 max-w-full'>
+    <div className='flex flex-col p-4 dark:border-gray-600 text-sm pl-0 max-w-full'>
       <div className='flex items-start'>
         <div className='flex-shrink-0 mr-3'>
           <img
@@ -214,7 +214,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
         </div>
         <div className='flex-1'>
           <div className='flex items-center mb-1'>
-            <span className='font-bold mr-1 text-xs truncate'>
+            <span className='font-extrabold mr-1 truncate text-xs'>
               {user ? `@${user.username}` : 'anonymous user'}
             </span>
             <span className='text-gray-500 text-xs'>
@@ -274,7 +274,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
           ) : (
             <>
               <p
-                className='text-gray-500 pb-2'
+                className='text-inherit-500 pb-2'
                 dangerouslySetInnerHTML={{ __html: sanitizedContent }}
               />
               <div className='flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2'>
@@ -290,10 +290,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
                   <FaThumbsUp className='text-sm' />
                 </button>
                 <p className='text-gray-400'>
-                  {comment.numberOfLikes > 0 &&
-                    comment.numberOfLikes +
-                      ' ' +
-                      (comment.numberOfLikes === 1 ? 'like' : 'likes')}
+                  {comment.numberOfLikes > 0 && comment.numberOfLikes}
                 </p>
                 <button
                   type='button'
@@ -397,7 +394,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete, replyToUser
           </div>
         </Modal.Body>
       </Modal>
-      <div className='pl-2'>
+      <div className='pl-2 ml-8'>
         {replies.map((reply) => (
           <Comment
             key={reply._id}
