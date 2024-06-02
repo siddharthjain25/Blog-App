@@ -18,11 +18,23 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    const checkSession = async () => {
+      const res = await fetch('/api/user/checkSession');
+      const data = await res.json();
+
+      if(currentUser && data.statusCode == 401){
+        dispatch(signoutSuccess());
+        navigate('/sign-in');
+      };
+    }
+    
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
     }
+
+    checkSession();
   }, [location.search]);
 
   const handleSignout = async () => {
