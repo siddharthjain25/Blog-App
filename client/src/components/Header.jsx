@@ -24,7 +24,6 @@ export default function Header() {
 
       if(currentUser && data.statusCode == 401){
         dispatch(signoutSuccess());
-        navigate('/sign-in');
       };
     }
     
