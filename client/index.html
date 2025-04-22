@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Xspark Blog delivers the latest trends in technology, innovation, and digital advancements. Explore expert articles on software development, gadgets, and more. Join the Xspark community at xspark.live.">
     <meta name="keywords" content="Xspark, Xspark BLog, coding, xspark article, java, cloud computing, Technology, nft, bitcoin, Blockchain, ReactJS, NextJS, developers, coders, bgmi, pubg, xspark bgmi, xspark pubg, HTML, CSS, JavaScript, xspark, xspark.live, xspark-blog">
-    <meta name="msvalidate.01" content="D4427DFB9DCA8F6DD580879533FFF8A1" />
     <meta name="author" content="Siddharth Jain">
     <title>Xspark Blog</title>
     <link rel="shortcut icon" href="./xspark logo.png" type="image/x-icon">
@@ -28,18 +27,5 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="siddharth25op" data-description="Support me on Buy me a coffee!" data-message="" data-color="cyan" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
-    <script src="https://cdn.socket.io/4.4.0/socket.io.js"></script>
-    <script>
-      let isFirstTime = true;
-      if(document.cookie) {
-    	  isFirstTime = false
-      } else {
-        document.cookie = "name=hasVisited;path=/";
-      }
-      const socket = io("analytics.xspark.live", {secure: true});
-      socket.on('socketClientID', function (socketClientID) {
-      socket.emit('clientMessage', {url: window.location.href, referrer: document.referrer, isFirstVisit: isFirstTime});
-    });
-  </script>
   </body>
 </html>
