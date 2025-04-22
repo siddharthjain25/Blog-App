@@ -12,7 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
     "@tinymce/tinymce-react": "^5.0.1",
-    "axios": "^1.6.8",
+    "axios": "^1.8.2",
     "dompurify": "^3.1.4",
     "firebase": "^10.7.1",
     "flowbite-react": "^0.7.0",
